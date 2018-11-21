@@ -1929,6 +1929,28 @@ public final class Position extends AbstractMoveablePosition
         //        System.out.println(value);
         return (getToPlay() == Chess.WHITE ? value : -value);
     }
+
+    public int getCardinality()
+    {
+        int value = 2; //kings (doesn't handle illegal positions)
+        value += numOfBitsSet(m_bbPawns);
+        value += numOfBitsSet(m_bbKnights);
+        value += numOfBitsSet(m_bbBishops & (~m_bbRooks));
+        value += numOfBitsSet(m_bbRooks);
+        return value;
+    }
+
+    public boolean isInsufficentMaterial()
+    {
+        int cardinality = getCardinality();
+        if(cardinality <= 2){
+            return true;
+        }
+        if(cardinality > 3){
+            return false; // does not cover multi-bishop case
+        }
+        return numOfBitsSet(m_bbBishops & (~m_bbRooks)) == 1;
+    }
     
     public double getDomination()
     {
